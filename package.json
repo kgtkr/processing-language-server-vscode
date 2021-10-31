@@ -1,0 +1,65 @@
+{
+  "name": "processing-language-server-vscode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^16.11.6",
+    "@types/vscode": "^1.61.0",
+    "typescript": "^4.4.4"
+  },
+  "engines": {
+    "vscode": "^1.43.0"
+  },
+  "activationEvents": [
+    "onLanguage:processing"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "processing",
+        "aliases": [
+          "Processing",
+          "processing"
+        ],
+        "extensions": [
+          ".pde"
+        ]
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Example configuration",
+      "properties": {
+        "processing-language-server.languageServerPath": {
+          "scope": "resource",
+          "type": "string",
+          "description": "ProcessingLanguageServer path.",
+          "default": ""
+        },
+        "processing-language-server.processingPath": {
+          "scope": "resource",
+          "type": "string",
+          "description": "ProcessingLanguageServer path.",
+          "default": ""
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "processing-language-server.restart",
+        "title": "Processing: Restart Language Server"
+      }
+    ]
+  },
+  "dependencies": {
+    "vscode-languageclient": "^7.0.0"
+  }
+}

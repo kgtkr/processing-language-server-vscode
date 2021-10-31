@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "extensionHost",
+            "request": "launch",
+            "name": "Launch Client",
+            "runtimeExecutable": "${execPath}",
+            "args": [
+                "--disable-extension",
+                "Tobiah.language-pde",
+                "--extensionDevelopmentPath=${workspaceRoot}"
+            ],
+            "outFiles": [
+                "${workspaceRoot}/dist/**/*.js"
+            ],
+            "preLaunchTask": {
+                "type": "npm",
+                "script": "build"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Client",
+            "configurations": [
+                "Launch Client"
+            ]
+        }
+    ]
+}
