@@ -2,3 +2,5 @@
 /tsconfig.tsbuildinfo
 /dist/
 *.vsix
+/keywords.txt
+/processing.tmLanguage.json

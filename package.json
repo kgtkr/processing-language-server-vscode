@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "vscode:prepublish": "npm run build",
+    "vscode:prepublish": "./generate-highlight.sh && npm run build",
     "build": "tsc",
     "build:watch": "tsc -w"
   },
@@ -57,6 +57,13 @@
       {
         "command": "processing-language-server.restart",
         "title": "Processing: Restart Language Server"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "processing",
+        "scopeName": "source.pde",
+        "path": "processing.tmLanguage.json"
       }
     ]
   },
