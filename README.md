@@ -2,7 +2,7 @@
 This extension is currently under development. 
 
 1. Install `*.vsix`. (download from artifacts of [actions page](https://github.com/kgtkr/processing-language-server-vscode/actions))
-2. Install Processing Language Server
+2. Install [Processing Language Server](https://github.com/kgtkr/processing-language-server)
 2. Configuration
     example
 
