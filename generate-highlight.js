@@ -58,12 +58,14 @@ function escapeRegExp(str) {
         name: "comment.block",
       },
       {
-        match: `("((\\\\.)|[^"\\\\])*")`,
-        captures: {
-          1: {
-            name: "string.quoted",
+        begin: `"`,
+        end: `"`,
+        patterns: [
+          {
+            match: `((\\\\.)|[^"\\\\])*`,
           },
-        },
+        ],
+        name: "string.quoted",
       },
       {
         match: `('((\\\\.)|[^'\\\\])')`,
