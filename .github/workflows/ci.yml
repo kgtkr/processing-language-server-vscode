@@ -1,0 +1,23 @@
+name: ci
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node
+      - name: npm install
+        run: npm ci
+      - name: build
+        run: npx vsce package
+      - uses: actions/upload-artifact@v2
+        with:
+          name: processing-language-server-vscode-1.0.0.vsix
+          path: processing-language-server-vscode-1.0.0.vsix
