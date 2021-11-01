@@ -1,4 +1,3 @@
-const http = require("http");
 const fs = require("fs");
 
 function escapeRegExp(str) {
@@ -6,7 +5,7 @@ function escapeRegExp(str) {
 }
 
 (async () => {
-  const keywordsTxt = fs.readFileSync("keywords.txt", { encoding: "utf8" });
+  const keywordsTxt = fs.readFileSync(process.argv[2], { encoding: "utf8" });
   const patterns = keywordsTxt
     .split("\n")
     .map((line) => line.trim())
