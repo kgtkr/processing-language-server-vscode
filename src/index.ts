@@ -211,6 +211,8 @@ class ProcessingLanguageServerClient {
     await addJars(path.join("modes", "java", "mode"));
     classpath += languageServerPath;
 
+    this.logOutputConsole.append("classpath:" + classpath);
+
     const clientOptions: LanguageClientOptions = {
       documentSelector: [{ scheme: "file", language: "processing" }],
       synchronize: {
