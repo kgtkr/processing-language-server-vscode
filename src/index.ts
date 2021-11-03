@@ -29,10 +29,12 @@ class ProcessingLanguageServerClient {
     const processingPath = this.config.get<string>("processingPath")!;
     try {
       this.processingVersion = await fs.readFile(
-        path.join(processingPath, "lib", "version.txt"),
+        process.platform === "darwin"
+          ? path.join(processingPath, "Contents", "Java", "lib", "version.txt")
+          : path.join(processingPath, "lib", "version.txt"),
         { encoding: "utf-8" }
       );
-    } catch {
+    } catch (e) {
       await vscode.window.showErrorMessage(
         `Processing path: '${processingPath}' is invalid. Please set the correct path to 'processing-language-server.processingPath' and reload.`
       );
@@ -207,9 +209,15 @@ class ProcessingLanguageServerClient {
       }
     };
 
-    await addJars("lib");
-    await addJars(path.join("core", "library"));
-    await addJars(path.join("modes", "java", "mode"));
+    if (process.platform === "darwin") {
+      await addJars(path.join("Contents", "Java"));
+      await addJars(path.join("Contents", "Java", "core", "library"));
+      await addJars(path.join("Contents", "Java", "modes", "java", "mode"));
+    } else {
+      await addJars("lib");
+      await addJars(path.join("core", "library"));
+      await addJars(path.join("modes", "java", "mode"));
+    }
     classpath += languageServerPath;
 
     this.logOutputConsole.append("classpath:" + classpath);
@@ -232,17 +240,30 @@ class ProcessingLanguageServerClient {
           `Starting language server. Port: ${port}`
         );
 
+        const javaPath = await (async () => {
+          switch (process.platform) {
+            case "win32":
+              return path.join(processingPath, "java", "bin", "java.exe");
+            case "linux":
+              return path.join(processingPath, "java", "bin", "java");
+            case "darwin":
+              const path1 = path.join(processingPath, "Contents", "PlugIns");
+              const path2 = (await fs.readdir(path1))[0];
+              const path3 = path.join("Contents", "Home", "bin", "java");
+              return path.join(path1, path2, path3);
+            default:
+              throw new Error("Unsupported platform");
+          }
+        })();
+
         await new Promise((resolve) => {
-          this.languageServerProcess = spawn(
-            path.join(processingPath, "java", "bin", "java"),
-            [
-              "-Djna.nosys=true",
-              "-classpath",
-              classpath,
-              "net.kgtkr.processingLanguageServer.main",
-              String(port),
-            ]
-          );
+          this.languageServerProcess = spawn(javaPath, [
+            "-Djna.nosys=true",
+            "-classpath",
+            classpath,
+            "net.kgtkr.processingLanguageServer.main",
+            String(port),
+          ]);
 
           this.languageServerProcess.stdout.on("data", (data) => {
             this.logOutputConsole.appendLine("[stdout]" + data.toString());
