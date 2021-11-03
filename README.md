@@ -1,7 +1,7 @@
 # Processing Language Server VSCode
 This extension is currently under development. 
 
-1. Install `*.vsix`. (download from artifacts of [actions page](https://github.com/kgtkr/processing-language-server-vscode/actions))
+1. Install from https://marketplace.visualstudio.com/items?itemName=kgtkr.processing-language-server-vscode
 2. Configuration
     example
 
