@@ -196,13 +196,14 @@ class ProcessingLanguageServerClient {
     let classpath = "";
 
     const addJars = async (dir: string) => {
+      const classPathSeparator = process.platform === "win32" ? ";" : ":";
       const absDir = path.join(processingPath, dir);
       const names = await fs.readdir(absDir);
       const jars = names
         .filter((name) => name.endsWith(".jar"))
         .map((name) => path.join(absDir, name));
       for (const jar of jars) {
-        classpath += jar + ":";
+        classpath += jar + classPathSeparator;
       }
     };
 
