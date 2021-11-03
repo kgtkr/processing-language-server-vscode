@@ -21,3 +21,6 @@ jobs:
         with:
           name: processing-language-server-vscode-1.0.0.vsix
           path: processing-language-server-vscode-1.0.0.vsix
+      - name: publish
+        run: npx vsce publish -p ${{ secrets.VSCE_PAT }}
+        if: github.ref == 'refs/heads/master'
