@@ -50,6 +50,12 @@
           "type": "string",
           "description": "ProcessingLanguageServer path.",
           "default": ""
+        },
+        "processing-language-server.autoUpdate": {
+          "scope": "resource",
+          "type": "boolean",
+          "description": "Enable processingLanguageServer auto update.",
+          "default": true
         }
       }
     },
@@ -68,6 +74,7 @@
     ]
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "vscode-languageclient": "^7.0.0"
   },
   "publisher": "kgtkr",
