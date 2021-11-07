@@ -41,16 +41,20 @@ class ProcessingLanguageServerClient {
     }
   }
 
-  async updateLanguageServer() {
+  async updateLanguageServer(context: ExtensionContext) {
     const autoUpdate = this.config.get<boolean>("autoUpdate")!;
     if (!autoUpdate) {
       return;
     }
 
     const languageServerDir = path.join(
-      os.homedir(),
+      context.globalStoragePath,
       "processing-language-server"
     );
+
+    try {
+      await fs.mkdir(context.globalStoragePath);
+    } catch {}
 
     try {
       await fs.mkdir(languageServerDir);
@@ -303,7 +307,7 @@ const client = new ProcessingLanguageServerClient();
 
 export async function activate(context: ExtensionContext): Promise<void> {
   await client.loadProcessingVersion();
-  await client.updateLanguageServer();
+  await client.updateLanguageServer(context);
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "processing-language-server.restart",
