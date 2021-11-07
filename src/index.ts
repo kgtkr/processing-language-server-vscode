@@ -225,7 +225,10 @@ class ProcessingLanguageServerClient {
     const clientOptions: LanguageClientOptions = {
       documentSelector: [{ scheme: "file", language: "processing" }],
       synchronize: {
-        fileEvents: vscode.workspace.createFileSystemWatcher("**/*.pde"),
+        fileEvents: [
+          vscode.workspace.createFileSystemWatcher("**/*.pde"),
+          vscode.workspace.createFileSystemWatcher("**/*.java"),
+        ],
       },
     };
 
