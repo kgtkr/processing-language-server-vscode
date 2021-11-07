@@ -20,10 +20,19 @@ class ProcessingLanguageServerClient {
   languageServerProcess: ChildProcessWithoutNullStreams | null = null;
   languageClient: LanguageClient | null = null;
   languageServerConn: net.Socket | null = null;
-  readonly config = vscode.workspace.getConfiguration(
-    "processing-language-server"
+  readonly configSection = "processing-language-server";
+  config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(
+    this.configSection
   );
   processingVersion = "";
+
+  async reloadConfig(context: ExtensionContext) {
+    await this.languageServerStop();
+    this.config = vscode.workspace.getConfiguration(this.configSection);
+    await this.loadProcessingVersion();
+    await client.updateLanguageServer(context);
+    await client.languageServerStart();
+  }
 
   async loadProcessingVersion() {
     const processingPath = this.config.get<string>("processingPath")!;
@@ -102,78 +111,81 @@ class ProcessingLanguageServerClient {
       return;
     }
 
-    if (installedVersions.has(newVersion)) {
-      return;
-    }
-
     const newVersionPath = path.join(languageServerDir, `${newVersion}.jar`);
     const newVersionUrl = `https://github.com/kgtkr/processing-language-server/raw/bin/${newVersion}.jar`;
 
-    try {
-      const tmp = path.join(
-        await fs.mkdtemp(path.join(os.tmpdir(), "processing-language-server-")),
-        "processing-language-server.jar"
-      );
+    if (!installedVersions.has(newVersion)) {
+      try {
+        const tmp = path.join(
+          await fs.mkdtemp(
+            path.join(os.tmpdir(), "processing-language-server-")
+          ),
+          "processing-language-server.jar"
+        );
 
-      await vscode.window.withProgress(
-        {
-          location: vscode.ProgressLocation.Notification,
-          title: "Updating Processing Language Server",
-          cancellable: false,
-        },
-        async (progress) => {
-          await new Promise((resolve, reject) => {
-            https.get(newVersionUrl, (res) => {
-              let downloadSize = 0;
-              const file = fsLegacy.createWriteStream(tmp);
-              res.pipe(file);
-              file.on("finish", async () => {
-                resolve(undefined);
-              });
-              res.on("data", (chunk: Buffer) => {
-                downloadSize += chunk.byteLength;
-                progress.report({
-                  message: `${downloadSize / 1000}KB`,
+        await vscode.window.withProgress(
+          {
+            location: vscode.ProgressLocation.Notification,
+            title: "Updating Processing Language Server",
+            cancellable: false,
+          },
+          async (progress) => {
+            await new Promise((resolve, reject) => {
+              https.get(newVersionUrl, (res) => {
+                let downloadSize = 0;
+                const file = fsLegacy.createWriteStream(tmp);
+                res.pipe(file);
+                file.on("finish", async () => {
+                  resolve(undefined);
+                });
+                res.on("data", (chunk: Buffer) => {
+                  downloadSize += chunk.byteLength;
+                  progress.report({
+                    message: `${downloadSize / 1000}KB`,
+                  });
+                });
+                res.on("error", (e) => {
+                  reject(e);
                 });
               });
-              res.on("error", (e) => {
-                reject(e);
-              });
             });
-          });
-        }
-      );
+          }
+        );
 
-      await fs.rename(tmp, newVersionPath);
+        await fs.rename(tmp, newVersionPath);
 
-      await fs.writeFile(
-        newVersionPath,
-        await axios(newVersionUrl, {
-          responseType: "arraybuffer",
-          onDownloadProgress: (progress) => {
-            this.logOutputConsole.append(
-              `Downloading ${newVersion}... ${Math.round(progress.percent)}%`
-            );
-          },
-        })
-          .then((res): ArrayBuffer => res.data)
-          .then((data) => Buffer.from(data))
-      );
+        await fs.writeFile(
+          newVersionPath,
+          await axios(newVersionUrl, {
+            responseType: "arraybuffer",
+            onDownloadProgress: (progress) => {
+              this.logOutputConsole.append(
+                `Downloading ${newVersion}... ${Math.round(progress.percent)}%`
+              );
+            },
+          })
+            .then((res): ArrayBuffer => res.data)
+            .then((data) => Buffer.from(data))
+        );
 
-      await this.config.update(
-        "languageServerPath",
-        newVersionPath,
-        vscode.ConfigurationTarget.Global
-      );
-
-      await vscode.window.showInformationMessage(
-        `Processing Language Server is updated.`
-      );
-    } catch (e) {
-      await vscode.window.showErrorMessage(
-        `Failed to update Processing Language Server: ${e}`
-      );
+        await vscode.window.showInformationMessage(
+          `Processing Language Server is updated.`
+        );
+      } catch (e) {
+        await vscode.window.showErrorMessage(
+          `Failed to update Processing Language Server: ${e}`
+        );
+      }
     }
+
+    this.logOutputConsole.appendLine(
+      Object.keys(this.config.inspect("processingPath")!).join(",")
+    );
+    await this.config.update(
+      "languageServerPath",
+      newVersionPath,
+      vscode.ConfigurationTarget.Global
+    );
   }
 
   async languageServerStop() {
@@ -306,6 +318,11 @@ class ProcessingLanguageServerClient {
 const client = new ProcessingLanguageServerClient();
 
 export async function activate(context: ExtensionContext): Promise<void> {
+  vscode.workspace.onDidChangeConfiguration(async (event) => {
+    if (event.affectsConfiguration(client.configSection)) {
+      await client.reloadConfig(context);
+    }
+  });
   await client.loadProcessingVersion();
   await client.updateLanguageServer(context);
   context.subscriptions.push(
