@@ -32,7 +32,8 @@
         ],
         "extensions": [
           ".pde"
-        ]
+        ],
+        "configuration": "./language-configuration.json"
       }
     ],
     "configuration": {
