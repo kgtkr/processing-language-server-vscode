@@ -1,6 +1,6 @@
 {
   "name": "processing-language-server-vscode",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -21,6 +21,11 @@
   },
   "activationEvents": [
     "onLanguage:processing"
+  ],
+  "preview": true,
+  "categories": [
+    "Programming Languages",
+    "Formatters"
   ],
   "contributes": {
     "languages": [
