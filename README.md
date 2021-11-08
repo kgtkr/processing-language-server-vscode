@@ -1,6 +1,8 @@
 # Processing Language Server VSCode
 [Processing Language Server](https://github.com/kgtkr/processing-language-server-vscode) VSCode Extension.
 
+![screenshot](screenshot.gif)
+
 This extension is currently under development. This is very unstable. If it crashes, Run `Processing: Restart Language Server` from the command palette. If that doesn't work, restart VSCode.
 
 ## Install
