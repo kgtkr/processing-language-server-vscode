@@ -112,7 +112,7 @@ class ProcessingLanguageServerClient {
     }
 
     const newVersionPath = path.join(languageServerDir, `${newVersion}.jar`);
-    const newVersionUrl = `https://github.com/kgtkr/processing-language-server/raw/bin/${newVersion}.jar`;
+    const newVersionUrl = `https://raw.githubusercontent.com/kgtkr/processing-language-server/bin/${newVersion}.jar`;
 
     if (!installedVersions.has(newVersion)) {
       try {
@@ -154,33 +154,17 @@ class ProcessingLanguageServerClient {
 
         await fs.rename(tmp, newVersionPath);
 
-        await fs.writeFile(
-          newVersionPath,
-          await axios(newVersionUrl, {
-            responseType: "arraybuffer",
-            onDownloadProgress: (progress) => {
-              this.logOutputConsole.append(
-                `Downloading ${newVersion}... ${Math.round(progress.percent)}%`
-              );
-            },
-          })
-            .then((res): ArrayBuffer => res.data)
-            .then((data) => Buffer.from(data))
-        );
-
-        await vscode.window.showInformationMessage(
+        vscode.window.showInformationMessage(
           `Processing Language Server is updated.`
         );
       } catch (e) {
-        await vscode.window.showErrorMessage(
+        vscode.window.showErrorMessage(
           `Failed to update Processing Language Server: ${e}`
         );
+        return;
       }
     }
 
-    this.logOutputConsole.appendLine(
-      Object.keys(this.config.inspect("processingPath")!).join(",")
-    );
     await this.config.update(
       "languageServerPath",
       newVersionPath,
