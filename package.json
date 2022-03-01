@@ -46,7 +46,7 @@
     ],
     "configuration": {
       "type": "object",
-      "title": "Example configuration",
+      "title": "processing-language-server",
       "properties": {
         "processing-language-server.languageServerPath": {
           "scope": "machine-overridable",
