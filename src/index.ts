@@ -262,6 +262,7 @@ class ProcessingLanguageServerClient {
         await new Promise((resolve) => {
           this.languageServerProcess = spawn(javaPath, [
             "-Djna.nosys=true",
+            "-Djava.awt.headless=true",
             "-classpath",
             classpath,
             "net.kgtkr.processingLanguageServer.main",
