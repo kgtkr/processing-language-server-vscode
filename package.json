@@ -48,23 +48,11 @@
       "type": "object",
       "title": "processing-language-server",
       "properties": {
-        "processing-language-server.languageServerPath": {
-          "scope": "machine-overridable",
-          "type": "string",
-          "description": "ProcessingLanguageServer path.",
-          "default": ""
-        },
         "processing-language-server.processingPath": {
           "scope": "machine-overridable",
           "type": "string",
           "description": "ProcessingLanguageServer path.",
           "default": ""
-        },
-        "processing-language-server.autoUpdate": {
-          "scope": "machine-overridable",
-          "type": "boolean",
-          "description": "Enable processingLanguageServer auto update.",
-          "default": true
         }
       }
     },
@@ -83,7 +71,6 @@
     ]
   },
   "dependencies": {
-    "axios": "^0.24.0",
     "vscode-languageclient": "^7.0.0"
   },
   "publisher": "kgtkr",
