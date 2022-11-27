@@ -19,9 +19,9 @@ This extension is currently under development. This is very unstable. If it cras
     ```json
     {
         // linux
-        "processing-language-server.processingPath": "/home/user/processing-4.0b2",
+        "processing-language-server.processingPath": "/home/user/processing-4.1",
         // windows
-        "processing-language-server.processingPath": "C:\\Users\\user\\processing-4.0b2",
+        "processing-language-server.processingPath": "C:\\Users\\user\\processing-4.1",
         // macos
         "processing-language-server.processingPath": "/Applications/Processing.app"
     }
