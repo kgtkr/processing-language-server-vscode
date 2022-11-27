@@ -23,6 +23,7 @@ class ProcessingLanguageServerClient {
   async reloadConfig(context: ExtensionContext) {
     await this.languageServerStop();
     this.config = vscode.workspace.getConfiguration(this.configSection);
+    await this.loadProcessingVersion();
     await client.languageServerStart();
   }
 
@@ -150,7 +151,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
       }
     )
   );
-
+  await this.loadProcessingVersion();
   await client.languageServerStart();
 }
 
