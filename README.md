@@ -1,5 +1,5 @@
 # Processing Language Server VSCode
-[Processing Language Server](https://github.com/kgtkr/processing-language-server-vscode) VSCode Extension.
+Processing VSCode Extension.
 
 ![screenshot](screenshot.gif)
 
@@ -10,8 +10,7 @@ This extension is currently under development. This is very unstable. If it cras
 * https://marketplace.visualstudio.com/items?itemName=kgtkr.processing-language-server-vscode
 
 ## Support Processing Version
-* 4.0b1
-* 4.0b2
+* 4.1 >=
 
 ## Configuration
 ### `processing-language-server.processingPath` (required)
@@ -27,12 +26,3 @@ This extension is currently under development. This is very unstable. If it cras
         "processing-language-server.processingPath": "/Applications/Processing.app"
     }
     ```
-
-### `processing-language-server.autoUpdate` (default: `true`)
-* Enable automatic update Processing Language Server.
-* When enabled, it will be automatically downloaded to `$HOME/processing-language-server`.
-*If you're using an unsupported version of Processing, disabling automatic updates and setting the `languageServerPath` may work.
-
-### `processing-language-server.languageServerPath`
-* processing language server jar path.
-* If automatic update is enabled, it will be set automatically.
