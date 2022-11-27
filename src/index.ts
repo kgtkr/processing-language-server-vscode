@@ -26,6 +26,22 @@ class ProcessingLanguageServerClient {
     await client.languageServerStart();
   }
 
+  async loadProcessingVersion() {
+    const processingPath = this.config.get<string>("processingPath")!;
+    try {
+      this.processingVersion = await fs.readFile(
+        process.platform === "darwin"
+          ? path.join(processingPath, "Contents", "Java", "lib", "version.txt")
+          : path.join(processingPath, "lib", "version.txt"),
+        { encoding: "utf-8" }
+      );
+    } catch (e) {
+      await vscode.window.showErrorMessage(
+        `Processing path: '${processingPath}' is invalid. Please set the correct path to 'processing-language-server.processingPath' and reload.`
+      );
+    }
+  }
+
   async languageServerStop() {
     if (this.languageClient !== null) {
       await this.languageClient.stop();
