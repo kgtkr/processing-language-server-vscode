@@ -38,7 +38,7 @@ class ProcessingLanguageServerClient {
       );
     } catch (e) {
       await vscode.window.showErrorMessage(
-        `Processing path: '${processingPath}' is invalid. Please set the correct path to 'processing-language-server.processingPath' and reload.`
+        `Processing path: '${processingPath}' is invalid. Check if processing4.1 or higher is installed. Please set the correct path to 'processing-language-server.processingPath' and reload.`
       );
       return;
     }
