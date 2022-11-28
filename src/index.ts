@@ -105,7 +105,7 @@ class ProcessingLanguageServerClient {
           "-Djava.awt.headless=true",
           "-classpath",
           classpath,
-          "processing.mode.java.languageServer.App",
+          "processing.mode.java.lsp.PdeLanguageServer",
         ]);
 
         return this.languageServerProcess;
