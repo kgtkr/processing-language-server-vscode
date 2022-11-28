@@ -166,7 +166,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
       }
     )
   );
-  await this.loadProcessingVersion();
+  await client.checkProcessingVersion();
   await client.languageServerStart();
 }
 
