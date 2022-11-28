@@ -22,7 +22,40 @@ class ProcessingLanguageServerClient {
   async reloadConfig(context: ExtensionContext) {
     await this.languageServerStop();
     this.config = vscode.workspace.getConfiguration(this.configSection);
+    await this.checkProcessingVersion();
     await client.languageServerStart();
+  }
+
+  async checkProcessingVersion() {
+    const processingPath = this.config.get<string>("processingPath")!;
+    let version;
+    try {
+      version = await fs.readFile(
+        process.platform === "darwin"
+          ? path.join(processingPath, "Contents", "Java", "lib", "version.txt")
+          : path.join(processingPath, "lib", "version.txt"),
+        { encoding: "utf-8" }
+      );
+    } catch (e) {
+      await vscode.window.showErrorMessage(
+        `Processing path: '${processingPath}' is invalid. Please set the correct path to 'processing-language-server.processingPath' and reload.`
+      );
+      return;
+    }
+
+    // check 4.1 >=
+    const matchVersion = version.match(/^(\d+)\.(\d+)/);
+    if (
+      matchVersion === null ||
+      matchVersion.length < 3 ||
+      +matchVersion[1] < 4 ||
+      (+matchVersion[1] === 4 && +matchVersion[2] < 1)
+    ) {
+      await vscode.window.showErrorMessage(
+        `Processing version: '${version}' is unsupported. Please update to 4.1 or later.`
+      );
+      return;
+    }
   }
 
   async languageServerStop() {
@@ -133,6 +166,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
       }
     )
   );
+  await client.checkProcessingVersion();
   await client.languageServerStart();
 }
 
